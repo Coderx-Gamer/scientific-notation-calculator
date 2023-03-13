@@ -220,6 +220,24 @@ public class Main {
                     String partial = toNotation(parts[0] + parts[1]);
                     return partial.split(Pattern.quote("e"))[0] + "e+" + (Integer.parseInt(partial.split(Pattern.quote("e"))[1].substring(1)) - parts[1].length());
                 } else {
+                    boolean noZero = number.split(Pattern.quote("."))[1].charAt(0) != '0';
+
+                    if (noZero) {
+                        number = "0.0" + number.split(Pattern.quote("."))[1];
+                    } else {
+                        boolean allZeros = true;
+                        for (char c : number.toCharArray()) {
+                            if (!(c == '.' || c == '0')) {
+                                allZeros = false;
+                                break;
+                            }
+                        }
+
+                        if (allZeros) {
+                            return "0e+0";
+                        }
+                    }
+
                     int zeros = 0;
                     for (int i = 0; i < number.length(); i++) {
                         if (number.charAt(i) == '0' || number.charAt(i) == '.') {
@@ -230,7 +248,7 @@ public class Main {
                             break;
                         }
                     }
-                    return toNotation(number.substring(zeros + 1)).split(Pattern.quote("e"))[0] + "e-" + zeros;
+                    return toNotation(number.substring(zeros + 1)).split(Pattern.quote("e"))[0] + "e-" + (zeros - (noZero ? 1 : 0));
                 }
             }
         }
